@@ -33,53 +33,53 @@ function handlerSubmit(event) {
   const cityValue = event.currentTarget.elements.city.value;
   const daysValue = event.currentTarget.elements.days.value;
 
-  //   serviceWeather(cityValue, daysValue)
-  //     .then(data => {
-  //       console.log(data);
-  //       list.innerHTML = createMarkup(data.forecast.forecastday);
-  //     })
-  //     .catch(error => {
-  //       list.innerHTML = 'Ooops';
-  //     })
-  //     .finally(() => {
-  //       event.target.reset();
-  //     });
-  // }
-
-  function serviceWeather(city = '', days = 1) {
-    const params = new URLSearchParams({
-      key: API_KEY,
-      q: city,
-      days: days,
-      lang: 'uk',
+  serviceWeather(cityValue, daysValue)
+    .then(data => {
+      console.log(data);
+      list.innerHTML = createMarkup(data.forecast.forecastday);
+    })
+    .catch(error => {
+      list.innerHTML = 'Ooops';
+    })
+    .finally(() => {
+      event.target.reset();
     });
+}
 
-    return fetch(`${BASE_URL}/forecast.json?${params}`).then(response => {
-      if (!response.ok) {
-        throw new Error(response.statusText);
-      }
+function serviceWeather(city = '', days = 1) {
+  const params = new URLSearchParams({
+    key: API_KEY,
+    q: city,
+    days: days,
+    lang: 'uk',
+  });
 
-      return response.json();
-    });
-  }
+  return fetch(`${BASE_URL}/forecast.json?${params}`).then(response => {
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
 
-  // function createMarkup(arr) {
-  //   return arr
-  //     .map(
-  //       ({
-  //         date,
-  //         day: {
-  //           avgtemp_c,
-  //           condition: { text, icon },
-  //         },
-  //       }) => `
-  //         <li class="weather-card">
-  //             <img src="${icon}" alt="${text}" class="weather-icon"/>
-  //             <h2 class="weather-date">${date}</h2>
-  //             <h3 class="weather-text">${text}</h3>
-  //             <h3 class="temperature">${avgtemp_c}°C</h3>
-  //         </li>
-  //     `
-  //     )
-  //     .join('');
+    return response.json();
+  });
+}
+
+function createMarkup(arr) {
+  return arr
+    .map(
+      ({
+        date,
+        day: {
+          avgtemp_c,
+          condition: { text, icon },
+        },
+      }) => `
+          <li class="weather-card">
+              <img src="${icon}" alt="${text}" class="weather-icon"/>
+              <h2 class="weather-date">${date}</h2>
+              <h3 class="weather-text">${text}</h3>
+              <h3 class="temperature">${avgtemp_c}°C</h3>
+          </li>
+      `
+    )
+    .join('');
 }
