@@ -1,56 +1,63 @@
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
-// import getImagesByQuery from './js/pixabay-api';
-// import {
-//   createGallery,
-//   clearGallery,
-//   showLoader,
-//   hideLoader,
-// } from './js/render-functions';
-
-import axios from 'axios';
-
-import SimpleLightbox from 'simplelightbox';
-import 'simplelightbox/dist/simple-lightbox.min.css';
-function getImagesByQuery(query) {}
-
-const API_KEY = '55656452-b960420c5594901b542f03c34';
-const BASE_URL = 'https://pixabay.com/api/';
+import getImagesByQuery from './js/pixabay-api';
+import {
+  createGallery,
+  clearGallery,
+  showLoader,
+  hideLoader,
+} from './js/render-functions';
 
 const form = document.querySelector('.form');
-const gallery = document.querySelector('.gallery');
+
 form.addEventListener('submit', handleSubmit);
+
 function handleSubmit(event) {
   event.preventDefault();
 
-  const value = event.target.elements['search-text'].value.trim();
+  const searchText = event.target.elements['search-text'].value.trim();
 
-  if (value === '') {
+  if (!searchText) {
     iziToast.show({
       title: 'Warning',
-      message:
-        'Sorry, there are no images matching your search query. Please try again!',
-      backgroundColor: 'red',
+      message: 'The form field must be filled in.',
+      backgroundColor: 'pink',
       position: 'topLeft',
       timeout: 8000,
     });
-  } else {
+    return;
   }
-}
-function getImagesByQuery(query) {
-  return axios
-    .get('https://pixabay.com/api/', {
-      params: {
-        key: API_KEY,
-        q: query,
-        image_type: 'photo',
-        orientation: 'horizontal',
-        safesearch: 'true',
-      },
-    })
 
-    .then(res => {
-      return res.data.hits;
+  showLoader();
+
+  getImagesByQuery(searchText)
+    .then(response => {
+      clearGallery();
+
+      if (response?.hits?.length) {
+        createGallery(response.hits);
+      } else {
+        iziToast.show({
+          title: 'Warning',
+          message:
+            'Sorry, there are no images matching your search query. Please try again!',
+          backgroundColor: 'pink',
+          position: 'topLeft',
+          timeout: 8000,
+        });
+      }
+
+      event.target.reset();
+    })
+    .catch(error => {
+      iziToast.error({
+        message: error.message,
+        position: 'topLeft',
+        timeout: 8000,
+      });
+    })
+    .finally(() => {
+      hideLoader();
     });
 }
