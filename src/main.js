@@ -29,12 +29,14 @@ function handleSubmit(event) {
     return;
   }
 
+  // ✅ 1. ОЧИЩЕННЯ ТУТ (це головна правка)
+  clearGallery();
+
+  // ✅ 2. ПОКАЗ LOADER
   showLoader();
 
   getImagesByQuery(searchText)
     .then(response => {
-      clearGallery();
-
       if (response?.hits?.length) {
         createGallery(response.hits);
       } else {
