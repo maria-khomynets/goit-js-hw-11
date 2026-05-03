@@ -29,10 +29,8 @@ function handleSubmit(event) {
     return;
   }
 
-  // ✅ 1. ОЧИЩЕННЯ ТУТ (це головна правка)
   clearGallery();
 
-  // ✅ 2. ПОКАЗ LOADER
   showLoader();
 
   getImagesByQuery(searchText)
